@@ -132,7 +132,20 @@ a.set(\t_trig, 1);
 a.free;
 
 
+(
+SynthDef(\impulseVerb, {
+	var snd, trigger, duration;
+	duration = \duration.kr(1.0);
+	trigger = Impulse.ar(XLine.ar(30, 1, duration));
+	snd = SinOsc.ar(Decay.ar(trigger, 0.01).linexp(0, 1, 100, 3000)) * Decay.ar(trigger, 0.02);
+	snd = GVerb.ar(snd, 30, 1);
+	snd = snd * Env.linen(0, duration, 0.01, curve: -4).ar(Done.freeSelf);
+	snd = snd * -5.dbamp;
+	Out.ar(\out.kr(0), snd);
+}).add;
+)
 
+Synth(\impulseVerb);
 
 
 
